@@ -1,0 +1,17 @@
+[package]
+name = "basic_concepts"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+time = "0.3.30"  # For performance measurement in fibonacci exercise
+
+[[bin]]
+name = "temperature_converter"
+path = "exercises/solutions/ex1_temperature_converter/src/main.rs"
+
+[[bin]]
+name = "fibonacci_calculator"
+path = "exercises/solutions/ex2_fibonacci/src/main.rs"
+
+# Additional exercise binaries will be added here as they are implemented 

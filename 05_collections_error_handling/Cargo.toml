@@ -1,0 +1,36 @@
+[package]
+name = "collections_error_handling"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rand = "0.8.5"     # For random number generation
+thiserror = "1.0"  # For error handling
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[[bin]]
+name = "main"
+path = "src/main.rs"
+
+[[bin]]
+name = "vector_operations"
+path = "exercises/solutions/ex1_vector_operations/src/main.rs"
+
+[[bin]]
+name = "error_handling"
+path = "exercises/solutions/ex2_error_handling/src/main.rs"
+
+[[bin]]
+name = "hashmap_exercises"
+path = "exercises/solutions/ex3_hashmap_exercises/src/main.rs"
+
+[[bin]]
+name = "custom_errors"
+path = "exercises/solutions/ex4_custom_errors/src/main.rs"
+
+[[bin]]
+name = "advanced_collections"
+path = "exercises/solutions/ex5_advanced_collections/src/main.rs"
+
+# Additional exercise binaries will be added here as they are implemented 

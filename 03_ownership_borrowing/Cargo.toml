@@ -1,0 +1,31 @@
+[package]
+name = "ownership_borrowing"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Common dependencies for ownership exercises
+regex = "1.5"      # For text analysis
+rand = "0.8.5"     # For random data generation
+
+[[bin]]
+name = "string_manipulator"
+path = "exercises/solutions/ex1_string_manipulator/src/main.rs"
+
+[[bin]]
+name = "text_analyzer"
+path = "exercises/solutions/ex2_text_analyzer/src/main.rs"
+
+[[bin]]
+name = "custom_vector"
+path = "exercises/solutions/ex3_custom_vector/src/main.rs"
+
+[[bin]]
+name = "document_manager"
+path = "exercises/solutions/ex4_document_manager/src/main.rs"
+
+[[bin]]
+name = "linked_list"
+path = "exercises/solutions/ex5_linked_list/src/main.rs"
+
+# Additional exercise binaries will be added here as they are implemented 
