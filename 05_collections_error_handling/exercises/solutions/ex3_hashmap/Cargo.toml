@@ -1,0 +1,9 @@
+[package]
+name = "hashmap_exercises"
+version = "0.1.0"
+edition = "2021"
+authors = ["Your Name <your.email@example.com>"]
+description = "A demonstration of HashMap operations in Rust"
+
+[dependencies]
+rand = "0.8"

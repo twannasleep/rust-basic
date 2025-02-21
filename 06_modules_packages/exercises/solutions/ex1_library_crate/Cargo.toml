@@ -1,0 +1,11 @@
+[package]
+name = "math_utils"
+version = "0.1.0"
+edition = "2021"
+authors = ["Your Name <your.email@example.com>"]
+description = "A mathematics utility library"
+license = "MIT"
+
+[dependencies]
+num = "0.4"
+rand = "0.8"

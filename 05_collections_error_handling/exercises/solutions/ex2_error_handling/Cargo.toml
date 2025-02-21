@@ -1,0 +1,11 @@
+[package]
+name = "error_handling"
+version = "0.1.0"
+edition = "2021"
+authors = ["Your Name <your.email@example.com>"]
+description = "A demonstration of error handling techniques in Rust"
+
+[dependencies]
+thiserror = "1.0"
+anyhow = "1.0"
+tempfile = "3.2"
