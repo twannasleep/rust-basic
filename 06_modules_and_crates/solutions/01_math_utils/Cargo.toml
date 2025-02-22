@@ -1,0 +1,20 @@
+[package]
+name = "math_utils"
+version = "0.1.0"
+edition = "2021"
+authors = ["Your Name <your.email@example.com>"]
+description = "A comprehensive math utilities library"
+license = "MIT"
+
+[dependencies]
+num-traits = "0.2"
+thiserror = "1.0"
+rand = { version = "0.8", features = ["std_rng"] }
+
+[dev-dependencies]
+criterion = "0.5"
+approx = "0.5"
+
+[[bench]]
+name = "arithmetic_bench"
+harness = false 
