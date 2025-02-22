@@ -1,6 +1,20 @@
-# Advanced Features in Rust
+# 🚀 Advanced Features in Rust
 
-## Unsafe Rust
+## 📋 Overview
+
+Rust provides powerful advanced features that enable low-level control, high-level abstractions, and safe systems programming.
+
+## ⚠️ Unsafe Rust
+
+### When to Use Unsafe
+
+Unsafe Rust is necessary for:
+
+- Dereferencing raw pointers
+- Calling unsafe functions
+- Implementing unsafe traits
+- Accessing or modifying mutable static variables
+- Interfacing with C code (FFI)
 
 ```rust
 // Basic unsafe block
@@ -12,27 +26,37 @@ unsafe fn dangerous() {
 fn raw_pointers() {
     let mut num = 5;
     
-    let r1 = &num as *const i32;
-    let r2 = &mut num as *mut i32;
+    let r1 = &num as *const i32;    // Immutable raw pointer
+    let r2 = &mut num as *mut i32;  // Mutable raw pointer
     
     unsafe {
         println!("r1 is: {}", *r1);
         *r2 = 10;
+        println!("r2 is: {}", *r2);
     }
 }
 
 // FFI (Foreign Function Interface)
+#[link(name = "c")]
 extern "C" {
     fn abs(input: i32) -> i32;
+    fn malloc(size: usize) -> *mut u8;
+    fn free(ptr: *mut u8);
 }
 
-unsafe fn call_c_function() {
-    let result = abs(-3);
+unsafe fn call_c_functions() {
+    let result = abs(-42);
     println!("Absolute value: {}", result);
+    
+    let ptr = malloc(100);
+    // Use ptr...
+    free(ptr);
 }
 ```
 
-## Advanced Traits
+## 🎨 Advanced Traits
+
+### Associated Types and Generic Parameters
 
 ```rust
 // Associated types
@@ -40,6 +64,18 @@ trait Container {
     type Item;
     fn get(&self) -> Option<&Self::Item>;
     fn insert(&mut self, item: Self::Item);
+}
+
+impl Container for Vec<String> {
+    type Item = String;
+    
+    fn get(&self) -> Option<&Self::Item> {
+        self.first()
+    }
+    
+    fn insert(&mut self, item: Self::Item) {
+        self.push(item)
+    }
 }
 
 // Default type parameters
@@ -53,7 +89,7 @@ trait Display: Debug {
     fn format(&self) -> String;
 }
 
-// Trait objects
+// Trait objects and dynamic dispatch
 fn draw_all(shapes: &[Box<dyn Draw>]) {
     for shape in shapes {
         shape.draw();
@@ -61,12 +97,41 @@ fn draw_all(shapes: &[Box<dyn Draw>]) {
 }
 ```
 
-## Advanced Types
+### Advanced Trait Features
+
+```rust
+// Marker traits
+trait Marker {}
+
+// Auto traits
+unsafe auto trait Send {}
+
+// Conditional trait implementations
+impl<T: Display> ToString for T {
+    fn to_string(&self) -> String {
+        self.to_string()
+    }
+}
+
+// Associated constants
+trait Number {
+    const ZERO: Self;
+    const ONE: Self;
+}
+
+// Trait aliases
+trait MyError = Error + Send + Sync;
+```
+
+## 🔧 Advanced Types
+
+### Type System Features
 
 ```rust
 // Type aliases
 type Kilometers = i32;
 type Thunk = Box<dyn Fn() + Send + 'static>;
+type Result<T> = std::result::Result<T, MyError>;
 
 // Never type
 fn never_returns() -> ! {
@@ -82,60 +147,139 @@ fn generic<T: Sized>(t: T) {
 fn print_str(s: &str) {  // str is DST
     println!("{}", s);
 }
+
+// Zero-sized types
+struct Unit;
+struct PhantomData<T>;
+
+// Custom smart pointers
+use std::ops::{Deref, DerefMut};
+
+struct MyBox<T>(T);
+
+impl<T> Deref for MyBox<T> {
+    type Target = T;
+    
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 ```
 
-## Macros
+## 🎭 Macros
+
+### Declarative Macros
 
 ```rust
-// Declarative macros
+// Simple macro
+macro_rules! say_hello {
+    () => {
+        println!("Hello!");
+    };
+}
+
+// Macro with parameters
 macro_rules! vec_strs {
     ($($x:expr),*) => {
         vec![$($x.to_string()),*]
     };
 }
 
-// Procedural macros
+// Pattern matching in macros
+macro_rules! math {
+    (add $a:expr, $b:expr) => {
+        $a + $b
+    };
+    (mul $a:expr, $b:expr) => {
+        $a * $b
+    };
+}
+```
+
+### Procedural Macros
+
+```rust
 use proc_macro;
 
+// Derive macro
 #[proc_macro_derive(MyDerive)]
 pub fn my_derive(input: TokenStream) -> TokenStream {
     // Implementation
 }
 
-// Attribute macros
-#[route(GET, "/")]
-fn index() {}
+// Attribute macro
+#[proc_macro_attribute]
+pub fn route(attr: TokenStream, item: TokenStream) -> TokenStream {
+    // Implementation
+}
 
-// Function-like macros
-let sql = sql!(SELECT * FROM posts WHERE id=1);
+// Function-like macro
+#[proc_macro]
+pub fn sql(input: TokenStream) -> TokenStream {
+    // Implementation
+}
 ```
 
-## Advanced Memory Management
+## 🧮 Advanced Memory Management
+
+### Custom Allocators
 
 ```rust
-// Custom allocators
+use std::alloc::{GlobalAlloc, Layout, System};
+
+struct MyAllocator;
+
+unsafe impl GlobalAlloc for MyAllocator {
+    unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
+        System.alloc(layout)
+    }
+    
+    unsafe fn dealloc(&self, ptr: *mut u8, layout: Layout) {
+        System.dealloc(ptr, layout)
+    }
+}
+
 #[global_allocator]
 static ALLOCATOR: MyAllocator = MyAllocator;
 
 // Memory mapping
-use std::alloc::{alloc, dealloc, Layout};
-
 unsafe fn custom_allocation() {
     let layout = Layout::new::<u32>();
     let ptr = alloc(layout);
+    // Use ptr...
     dealloc(ptr, layout);
-}
-
-// Reference counting
-use std::rc::Rc;
-use std::cell::RefCell;
-
-struct SharedData {
-    data: Rc<RefCell<Vec<i32>>>,
 }
 ```
 
-## Advanced Patterns
+### Reference Counting and Interior Mutability
+
+```rust
+use std::rc::Rc;
+use std::cell::{RefCell, Cell};
+
+struct SharedData {
+    data: Rc<RefCell<Vec<i32>>>,
+    counter: Cell<usize>,
+}
+
+impl SharedData {
+    fn new() -> Self {
+        Self {
+            data: Rc::new(RefCell::new(Vec::new())),
+            counter: Cell::new(0),
+        }
+    }
+    
+    fn add(&self, value: i32) {
+        self.data.borrow_mut().push(value);
+        self.counter.set(self.counter.get() + 1);
+    }
+}
+```
+
+## 🎯 Advanced Patterns
+
+### Pattern Matching
 
 ```rust
 // Pattern matching with guards
@@ -156,12 +300,21 @@ match value {
     x @ 1..=5 => println!("Got: {}", x),
     _ => println!("Other"),
 }
+
+// Struct patterns
+match point {
+    Point { x: 0, y } => println!("On y axis: {}", y),
+    Point { x, y: 0 } => println!("On x axis: {}", x),
+    Point { x, y } => println!("At ({}, {})", x, y),
+}
 ```
 
-## Zero-Cost Abstractions
+## ⚡ Zero-Cost Abstractions
+
+### Compile-Time Features
 
 ```rust
-// Compile-time guarantees
+// Const functions
 const fn compute_at_compile_time(x: u32) -> u32 {
     x * 2
 }
@@ -184,31 +337,76 @@ impl Iterator for Counter {
 }
 ```
 
-## Advanced Error Handling
+## 🔍 Best Practices
+
+### 1. Using Unsafe Code
 
 ```rust
-// Custom error types with source
-#[derive(Debug)]
-struct AppError {
-    kind: ErrorKind,
-    source: Option<Box<dyn Error>>,
+// Safe wrapper around unsafe code
+pub struct SafeWrapper {
+    ptr: *mut u8,
+    len: usize,
 }
 
-// Error conversion
-impl From<io::Error> for AppError {
-    fn from(error: io::Error) -> Self {
-        AppError {
-            kind: ErrorKind::Io,
-            source: Some(Box::new(error)),
-        }
+impl SafeWrapper {
+    pub fn new(size: usize) -> Self {
+        let layout = Layout::array::<u8>(size).unwrap();
+        let ptr = unsafe { alloc(layout) };
+        Self { ptr, len: size }
     }
 }
 
-// Backtrace support
-use std::backtrace::Backtrace;
-
-struct ErrorWithBacktrace {
-    message: String,
-    backtrace: Backtrace,
+impl Drop for SafeWrapper {
+    fn drop(&mut self) {
+        unsafe {
+            dealloc(self.ptr, Layout::array::<u8>(self.len).unwrap());
+        }
+    }
 }
 ```
+
+### 2. Error Handling
+
+```rust
+#[derive(Debug)]
+pub enum AdvancedError {
+    Io(std::io::Error),
+    Parse(std::num::ParseIntError),
+    Custom(String),
+}
+
+impl std::error::Error for AdvancedError {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        match self {
+            Self::Io(e) => Some(e),
+            Self::Parse(e) => Some(e),
+            Self::Custom(_) => None,
+        }
+    }
+}
+```
+
+### 3. Performance Optimization
+
+```rust
+// Use const generics
+struct Array<T, const N: usize> {
+    data: [T; N],
+}
+
+// Leverage type system for compile-time checks
+struct NotSend;
+struct ThreadSafe;
+
+struct Connection<State> {
+    state: std::marker::PhantomData<State>,
+}
+
+impl Connection<NotSend> {
+    fn make_thread_safe(self) -> Connection<ThreadSafe> {
+        Connection { state: std::marker::PhantomData }
+    }
+}
+```
+
+Remember: With great power comes great responsibility - use advanced features judiciously! 🚀
