@@ -12,8 +12,7 @@ Create a program that:
 
 **Skills practiced:**
 
-- Basic I/O
-- String handling
+g
 - Error handling
 
 ## Exercise 2: Number Guessing Game
