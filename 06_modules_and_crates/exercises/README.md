@@ -1,181 +1,261 @@
 # Modules and Crates Exercises
 
-## 🌟 Exercise 1: Library Organization
+## Exercise 1: Library Crate Design
 
-Create a library crate for a task management system:
+Create a library crate for a math utilities package:
+
+1. Create a library crate with the following structure:
+
+   ```
+   math_utils/
+   ├── Cargo.toml
+   ├── src/
+   │   ├── lib.rs
+   │   ├── arithmetic.rs
+   │   ├── statistics.rs
+   │   └── geometry/
+   │       ├── mod.rs
+   │       ├── shapes.rs
+   │       └── transformations.rs
+   ```
+
+2. Implement the following modules:
+   - `arithmetic`: Basic arithmetic operations
+   - `statistics`: Mean, median, mode, standard deviation
+   - `geometry::shapes`: Area and perimeter calculations
+   - `geometry::transformations`: Rotation, scaling, translation
+
+3. Requirements:
+   - Use proper visibility rules
+   - Implement comprehensive tests
+   - Add documentation with examples
+   - Create a useful public API
+   - Handle errors appropriately
+
+Example structure:
 
 ```rust
-// TODO: Implement the following module structure
-// src/
-//   lib.rs
-//   tasks/
-//     mod.rs
-//     task.rs
-//     status.rs
-//   users/
-//     mod.rs
-//     user.rs
-//     permissions.rs
-//   utils/
-//     mod.rs
-//     date.rs
-//     id_generator.rs
+// lib.rs
+pub mod arithmetic;
+pub mod statistics;
+pub mod geometry;
 
-// Example module implementation
-pub mod tasks {
-    mod task;
-    mod status;
-    
-    pub use task::Task;
-    pub use status::Status;
-    
-    // Add necessary types and functions
+// arithmetic.rs
+pub fn gcd(a: u64, b: u64) -> u64 {
+    // Implementation
+}
+
+pub fn lcm(a: u64, b: u64) -> u64 {
+    // Implementation
+}
+
+// statistics.rs
+pub fn mean(numbers: &[f64]) -> Option<f64> {
+    // Implementation
+}
+
+// geometry/shapes.rs
+pub struct Rectangle {
+    width: f64,
+    height: f64,
+}
+
+impl Rectangle {
+    pub fn area(&self) -> f64 {
+        // Implementation
+    }
 }
 ```
 
-**Skills practiced:**
+## Exercise 2: Application Architecture
 
-- Module organization
-- Visibility rules
-- Re-exports
-- Documentation
+Create a command-line todo application with the following module structure:
 
-## 🌟🌟 Exercise 2: Public API Design
+1. Project structure:
 
-Design a public API for a math utilities library:
+   ```
+   todo_app/
+   ├── Cargo.toml
+   ├── src/
+   │   ├── main.rs
+   │   ├── commands/
+   │   │   ├── mod.rs
+   │   │   ├── add.rs
+   │   │   ├── list.rs
+   │   │   └── remove.rs
+   │   ├── storage/
+   │   │   ├── mod.rs
+   │   │   └── file.rs
+   │   └── models/
+   │       ├── mod.rs
+   │       └── todo.rs
+   ```
 
-```rust
-// TODO: Create a well-organized math library
-pub mod arithmetic {
-    // Basic operations
-}
+2. Requirements:
+   - Implement command handling in separate modules
+   - Use a storage module for persistence
+   - Create a proper type system for todos
+   - Handle errors with custom error types
+   - Use external crates for:
+     - Command line parsing
+     - Serialization
+     - Date/time handling
 
-pub mod statistics {
-    // Statistical functions
-}
-
-pub mod geometry {
-    // Geometric calculations
-}
-
-// Include:
-// - Public interfaces
-// - Private implementation details
-// - Proper documentation
-// - Unit tests
-```
-
-**Skills practiced:**
-
-- API design
-- Documentation
-- Testing
-- Module privacy
-
-## 🌟🌟 Exercise 3: Workspace Management
-
-Create a workspace with multiple related crates:
-
-```toml
-# TODO: Create a workspace with:
-# - Core library crate
-# - CLI application
-# - Web API
-# - Shared utilities
-
-[workspace]
-members = [
-    "core",
-    "cli",
-    "web",
-    "utils"
-]
-```
-
-**Skills practiced:**
-
-- Workspace configuration
-- Inter-crate dependencies
-- Shared code
-- Package management
-
-## 🌟🌟🌟 Exercise 4: Plugin System
-
-Implement a plugin system using modules:
+Example usage:
 
 ```rust
-// TODO: Create a plugin system where:
-// - Plugins are separate modules
-// - Plugins implement a common trait
-// - Main application loads plugins dynamically
+// main.rs
+mod commands;
+mod storage;
+mod models;
 
-pub trait Plugin {
+fn main() {
+    // Parse commands and execute appropriate handlers
+}
+
+// models/todo.rs
+pub struct Todo {
+    id: u32,
+    title: String,
+    completed: bool,
+}
+
+// commands/add.rs
+pub fn execute(title: String) -> Result<(), Error> {
+    // Implementation
+}
+```
+
+## Exercise 3: Plugin System
+
+Create a plugin system for a text processing application:
+
+1. Project structure:
+
+   ```
+   text_processor/
+   ├── Cargo.toml
+   ├── src/
+   │   ├── lib.rs
+   │   ├── plugin.rs
+   │   └── processor.rs
+   ├── plugins/
+   │   ├── uppercase/
+   │   │   └── src/lib.rs
+   │   └── counter/
+   │       └── src/lib.rs
+   ```
+
+2. Requirements:
+   - Define a plugin trait
+   - Create a plugin manager
+   - Implement dynamic loading
+   - Create example plugins
+   - Use workspace organization
+
+Example implementation:
+
+```rust
+// lib.rs
+pub trait TextPlugin {
     fn name(&self) -> &str;
-    fn execute(&self) -> Result<(), Box<dyn Error>>;
+    fn process(&self, input: &str) -> String;
 }
 
-// Implement plugin loading and management
+// plugin.rs
 pub struct PluginManager {
-    plugins: HashMap<String, Box<dyn Plugin>>,
+    plugins: Vec<Box<dyn TextPlugin>>,
+}
+
+// plugins/uppercase/src/lib.rs
+pub struct UppercasePlugin;
+
+impl TextPlugin for UppercasePlugin {
+    // Implementation
 }
 ```
 
-**Skills practiced:**
+## Exercise 4: Web Service
 
-- Dynamic loading
-- Trait objects
-- Error handling
-- Module interfaces
+Create a modular web service with the following features:
 
-## 🌟🌟🌟 Exercise 5: Feature Flags
+1. Project structure:
 
-Implement conditional compilation with features:
+   ```
+   web_service/
+   ├── Cargo.toml
+   ├── src/
+   │   ├── main.rs
+   │   ├── api/
+   │   │   ├── mod.rs
+   │   │   └── handlers.rs
+   │   ├── db/
+   │   │   ├── mod.rs
+   │   │   └── models.rs
+   │   └── config/
+   │       ├── mod.rs
+   │       └── settings.rs
+   ```
 
-```toml
-# Cargo.toml
-[features]
-default = ["std"]
-std = []
-async = ["tokio"]
-logging = ["log"]
-```
+2. Requirements:
+   - Use actix-web or rocket for the web framework
+   - Implement proper module organization
+   - Create middleware
+   - Handle configuration
+   - Implement database integration
+   - Add logging and error handling
 
+Example structure:
 ```rust
-// TODO: Implement features that:
-// - Provide different implementations based on features
-// - Handle optional dependencies
-// - Include conditional tests
-
-#[cfg(feature = "async")]
-pub async fn process() {
-    // Async implementation
+// api/handlers.rs
+pub async fn get_user(id: Path<i32>) -> Result<Json<User>> {
+    // Implementation
 }
 
-#[cfg(not(feature = "async"))]
-pub fn process() {
-    // Synchronous implementation
+// db/models.rs
+pub struct User {
+    id: i32,
+    name: String,
+}
+
+// config/settings.rs
+pub struct Settings {
+    pub database_url: String,
+    pub server_port: u16,
 }
 ```
-
-**Skills practiced:**
-
-- Feature flags
-- Conditional compilation
-- Optional dependencies
-- Cross-platform code
-
-## Tips
-
-1. Use meaningful module names
-2. Keep public APIs minimal
-3. Document all public items
-4. Follow the Rust API guidelines
-5. Write integration tests
 
 ## Evaluation Criteria
 
-- Code organization
-- Documentation quality
-- API usability
-- Test coverage
-- Feature implementation
+Your solutions will be evaluated based on:
+
+1. Module Organization
+   - Proper use of visibility rules
+   - Clear module hierarchy
+   - Logical grouping of functionality
+
+2. Code Quality
+   - Error handling
+   - Documentation
+   - Testing
+   - Type safety
+
+3. External Dependencies
+   - Appropriate use of external crates
+   - Version management
+   - Feature selection
+
+4. Project Structure
+   - Workspace organization
+   - File layout
+   - Build configuration
+
+## Testing
+
+For each exercise:
+
+1. Write unit tests for each module
+2. Add integration tests
+3. Include documentation tests
+4. Test error conditions
+5. Benchmark critical operations

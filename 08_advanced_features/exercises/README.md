@@ -1,189 +1,141 @@
 # Advanced Features Exercises
 
-## 🌟 Exercise 1: Unsafe Operations
+This section contains exercises to help you practice and master advanced Rust features. Each exercise focuses on different aspects of Rust's advanced capabilities.
 
-Implement a safe wrapper around unsafe code:
+## Exercise 1: Safe Wrapper for Unsafe Code
 
-```rust
-// TODO: Create a safe abstraction over raw pointers
-struct SafeBuffer<T> {
-    ptr: *mut T,
-    len: usize,
-}
+Create a safe abstraction over a raw memory buffer that provides the following features:
 
-impl<T> SafeBuffer<T> {
-    fn new(size: usize) -> Self {
-        // Allocate memory safely
-        // Return wrapped pointer
-    }
+- A fixed-size ring buffer implementation using raw pointers
+- Safe public API that prevents buffer overflows
+- Thread-safe operations using appropriate synchronization primitives
+- Proper memory management with custom `Drop` implementation
+- Comprehensive test suite including edge cases
 
-    fn get(&self, index: usize) -> Option<&T> {
-        // Safely access elements
-    }
+**Requirements:**
 
-    fn set(&mut self, index: usize, value: T) -> Result<(), String> {
-        // Safely modify elements
-    }
-}
+- Use unsafe code for the internal implementation
+- Implement `Send` and `Sync` traits
+- Provide iterator support
+- Handle error cases appropriately
+- Document unsafe invariants
 
-impl<T> Drop for SafeBuffer<T> {
-    fn drop(&mut self) {
-        // Clean up allocated memory
-    }
-}
-```
+## Exercise 2: Custom Smart Pointer
 
-**Skills practiced:**
+Implement a custom smart pointer type that provides the following features:
 
-- Safe abstractions
-- Raw pointer handling
-- Memory management
-- Resource cleanup
+- Reference counting with weak references
+- Interior mutability
+- Custom `Deref` and `DerefMut` implementations
+- Thread-safe clone operations
+- Type-safe downcast operations
 
-## 🌟🌟 Exercise 2: Advanced Traits
+**Requirements:**
 
-Create a type-safe builder pattern:
+- Use appropriate atomic types for thread safety
+- Implement proper drop semantics
+- Handle circular references
+- Provide comprehensive documentation
+- Include examples of common use cases
 
-```rust
-// TODO: Implement a compile-time checked builder
-trait BuilderState {}
+## Exercise 3: Advanced Macro System
 
-struct Incomplete;
-struct Complete;
+Create a macro system that helps with database operations:
 
-impl BuilderState for Incomplete {}
-impl BuilderState for Complete {}
+- Create macros for generating SQL queries
+- Support different types of queries (SELECT, INSERT, UPDATE)
+- Handle parameter binding safely
+- Provide compile-time query validation
+- Generate appropriate Rust types for results
 
-struct ServerBuilder<State: BuilderState> {
-    host: Option<String>,
-    port: Option<u16>,
-    state: std::marker::PhantomData<State>,
-}
-
-impl ServerBuilder<Complete> {
-    fn build(self) -> Server {
-        // Create server instance
-    }
-}
-```
-
-**Skills practiced:**
-
-- Type state programming
-- Associated types
-- Generic traits
-- Builder pattern
-
-## 🌟🌟 Exercise 3: Custom Macros
-
-Implement useful procedural macros:
+**Example Usage:**
 
 ```rust
-// TODO: Create macros for:
-// - Deriving custom debug implementation
-// - Generating builder patterns
-// - Adding timing instrumentation
-// - Validating struct fields
-
-#[derive(CustomDebug)]
-struct MyStruct {
-    field1: i32,
-    #[debug(format = "0x{:X}")]
-    field2: u64,
-}
-
-#[derive(Builder)]
-struct Configuration {
-    #[builder(default = "8080")]
-    port: u16,
-    #[builder(required)]
-    host: String,
-}
+sql_query!(SELECT name, age FROM users WHERE id = ?1, user_id);
+sql_insert!(INSERT INTO users (name, age) VALUES (?1, ?2), name, age);
 ```
 
-**Skills practiced:**
+**Requirements:**
 
-- Declarative macros
-- Procedural macros
-- Code generation
-- Attribute handling
+- Handle SQL injection prevention
+- Support multiple database backends
+- Generate appropriate error types
+- Provide type safety for parameters
+- Include comprehensive testing
 
-## 🌟🌟🌟 Exercise 4: Zero-Cost Abstractions
+## Exercise 4: Type-Safe Builder Pattern
 
-Create efficient abstractions:
+Implement a type-safe builder pattern that ensures:
+
+- Required fields must be set
+- Optional fields can be omitted
+- Fields can only be set once
+- Type-safe validation at compile time
+- Proper error handling for runtime validation
+
+**Example Usage:**
 
 ```rust
-// TODO: Implement zero-cost wrappers and abstractions
-struct StaticVec<T, const N: usize> {
-    data: [T; N],
-    len: usize,
-}
-
-trait ConstFn {
-    const fn evaluate() -> Self;
-}
-
-#[inline(always)]
-fn optimize_me<T: Copy>(slice: &[T]) -> T {
-    // Implement SIMD operations
-    // Use const generics
-    // Leverage compile-time evaluation
-}
+let config = ConfigBuilder::new()
+    .name("test")
+    .timeout(30)
+    .optional_field(Some(value))
+    .build()?;
 ```
 
-**Skills practiced:**
+**Requirements:**
 
-- Const generics
-- SIMD operations
-- Compile-time evaluation
-- Performance optimization
+- Use phantom types for tracking builder state
+- Implement custom error types
+- Provide clear compiler errors
+- Include runtime validation
+- Document the type-state pattern used
 
-## 🌟🌟🌟 Exercise 5: Advanced Memory Patterns
+## Bonus Challenge: Zero-Cost State Machine
 
-Implement complex memory management:
+Create a zero-cost state machine that:
 
-```rust
-// TODO: Create a custom memory management system
-struct Arena<T> {
-    chunks: Vec<Box<[T]>>,
-    chunk_size: usize,
-}
+- Uses the type system to enforce valid state transitions
+- Compiles down to optimal machine code
+- Provides compile-time guarantees
+- Handles complex state transitions
+- Supports async state transitions
 
-struct CustomRc<T> {
-    inner: *mut RcInner<T>,
-}
+**Requirements:**
 
-struct RcInner<T> {
-    value: T,
-    refcount: Cell<usize>,
-}
-
-// Implement:
-// - Custom allocator
-// - Reference counting
-// - Memory pooling
-// - Garbage collection
-```
-
-**Skills practiced:**
-
-- Custom allocators
-- Reference counting
-- Memory pools
-- Safe abstractions
-
-## Tips
-
-1. Always document unsafe code
-2. Test edge cases thoroughly
-3. Consider performance implications
-4. Use type system guarantees
-5. Benchmark optimizations
+- Use const generics where appropriate
+- Implement custom derive macros
+- Provide visualizations of the state machine
+- Include benchmarks comparing to runtime alternatives
+- Document advanced type system features used
 
 ## Evaluation Criteria
 
-- Safety guarantees
-- Performance metrics
-- Code readability
-- Error handling
-- Documentation quality
+Your solutions will be evaluated based on:
+
+1. Proper use of unsafe code and safety guarantees
+2. Type system usage and compile-time guarantees
+3. Error handling and edge cases
+4. Documentation quality
+5. Test coverage and benchmark results
+6. Code organization and maintainability
+7. Performance considerations
+8. API ergonomics and usability
+
+## Getting Started
+
+1. Create a new directory for each exercise
+2. Include a README.md with your design decisions
+3. Implement the required functionality
+4. Add comprehensive tests
+5. Document unsafe code and invariants
+6. Include examples of usage
+7. Add benchmarks where appropriate
+
+## Tips
+
+- Use `cargo expand` to inspect macro expansion
+- Use `cargo doc` to generate and review documentation
+- Use `cargo test` with `--release` for benchmarks
+- Consider using `cargo flamegraph` for performance analysis
+- Review the Rust Reference for advanced feature details

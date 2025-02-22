@@ -1,112 +1,194 @@
 # Types and Structs Exercises
 
-## Exercise 1: Custom Types
+## Exercise 1: Game Character System
 
-Create a basic shape system:
+Create a game character system with the following requirements:
 
+1. Define a `Character` struct with:
+   - Name
+   - Health points
+   - Level
+   - Character class (using an enum)
+   - Inventory (using a Vec)
+
+2. Implement the following traits:
+   - `Attack`: Calculate damage based on level and class
+   - `Defend`: Calculate defense based on equipment
+   - `LevelUp`: Handle level-up mechanics
+
+Example structure:
 ```rust
-// TODO: Implement these structs and enums
-struct Rectangle {
-    width: u32,
-    height: u32,
+enum CharacterClass {
+    Warrior,
+    Mage,
+    Rogue,
 }
 
-struct Circle {
-    radius: f64,
+struct Character {
+    name: String,
+    health: u32,
+    level: u32,
+    class: CharacterClass,
+    inventory: Vec<Item>,
 }
 
-enum Shape {
-    Rectangle(Rectangle),
-    Circle(Circle),
+trait Attack {
+    fn calculate_damage(&self) -> u32;
 }
 
-trait Area {
-    fn area(&self) -> f64;
-}
-
-// TODO: Implement Area for Rectangle and Circle
+// TODO: Implement the system
 ```
 
-## Exercise 2: Method Implementation
+## Exercise 2: Smart Home Devices
 
-Implement a basic banking system:
+Create a smart home system using enums and traits:
+
+1. Define different device types using enums
+2. Implement a common `Device` trait
+3. Handle device states and commands
+4. Implement error handling for invalid operations
+
+Example structure:
+```rust
+enum DeviceType {
+    Light { brightness: u8 },
+    Thermostat { temperature: f64 },
+    Lock { locked: bool },
+}
+
+trait Device {
+    fn turn_on(&mut self) -> Result<(), String>;
+    fn turn_off(&mut self) -> Result<(), String>;
+    fn get_status(&self) -> String;
+}
+
+// TODO: Implement the system
+```
+
+## Exercise 3: Generic Data Container
+
+Implement a generic data container with the following features:
+
+1. Store any type that implements `Clone` and `Debug`
+2. Provide methods for:
+   - Adding items
+   - Removing items
+   - Transforming items
+   - Filtering items
+3. Implement custom iterators
+
+Example structure:
 
 ```rust
-struct Account {
-    holder: String,
-    balance: f64,
-    account_type: AccountType,
+#[derive(Debug)]
+struct Container<T> {
+    items: Vec<T>,
 }
 
-enum AccountType {
-    Savings,
-    Checking,
-}
-
-impl Account {
-    // TODO: Implement these methods
-    fn new(holder: String, account_type: AccountType) -> Account {
-        // Implementation
+impl<T: Clone + Debug> Container<T> {
+    fn new() -> Self {
+        // TODO: Implement constructor
     }
     
-    fn deposit(&mut self, amount: f64) -> Result<(), String> {
-        // Implementation
-    }
-    
-    fn withdraw(&mut self, amount: f64) -> Result<(), String> {
-        // Implementation
+    fn transform<F>(&self, f: F) -> Container<T>
+    where
+        F: Fn(&T) -> T
+    {
+        // TODO: Implement transformation
     }
 }
 ```
 
-## Exercise 3: Traits and Generics
+## Exercise 4: Custom Error Types
 
-Create a data processing system:
+Create a library management system with custom error handling:
+
+1. Define custom error types using enums
+2. Implement the `Error` and `Display` traits
+3. Handle multiple error cases
+4. Use the `Result` type appropriately
+
+Example structure:
 
 ```rust
-trait Processable {
-    fn process(&self) -> String;
-    fn validate(&self) -> bool;
+#[derive(Debug)]
+enum LibraryError {
+    BookNotFound(String),
+    AlreadyBorrowed(String),
+    InvalidInput { details: String },
 }
 
-struct DataPoint<T> {
-    value: T,
-    timestamp: u64,
+impl std::error::Error for LibraryError {}
+
+impl Display for LibraryError {
+    // TODO: Implement display formatting
 }
 
-// TODO: Implement Processable for different DataPoint types
-impl<T: std::fmt::Display> Processable for DataPoint<T> {
-    // Implementation
-}
-
-// TODO: Create a generic data processor
-struct DataProcessor<T> {
-    data: Vec<DataPoint<T>>,
+struct Library {
+    // TODO: Implement library system
 }
 ```
 
-## Exercise 4: Advanced Patterns
+## Bonus Challenge: Expression Evaluator
 
-Work with advanced type patterns:
+Create an expression evaluator that:
+
+1. Uses enums to represent different types of expressions:
+   - Numbers
+   - Variables
+   - Binary operations
+   - Function calls
+
+2. Implements evaluation using pattern matching
+3. Handles operator precedence
+4. Provides error handling for invalid expressions
+
+Example structure:
 
 ```rust
-// TODO: Implement a builder pattern
-struct ServerBuilder {
-    host: Option<String>,
-    port: Option<u16>,
-    max_connections: Option<u32>,
+enum Expression {
+    Number(f64),
+    Variable(String),
+    BinaryOp {
+        op: Operator,
+        left: Box<Expression>,
+        right: Box<Expression>,
+    },
+    FunctionCall {
+        name: String,
+        args: Vec<Expression>,
+    },
 }
 
-// TODO: Implement type state pattern
-struct Draft;
-struct Published;
-
-struct Post<State> {
-    content: String,
-    state: State,
+enum Operator {
+    Add,
+    Subtract,
+    Multiply,
+    Divide,
 }
 
-impl Post<Draft> {
-    // Implementation
+impl Expression {
+    fn evaluate(&self, variables: &HashMap<String, f64>) -> Result<f64, String> {
+        // TODO: Implement expression evaluation
+    }
 }
 ```
+
+## Evaluation Criteria
+
+Your solutions will be evaluated based on:
+
+1. Proper use of Rust's type system
+2. Implementation of traits and generics
+3. Error handling
+4. Code organization and documentation
+5. Test coverage
+
+## Testing
+
+For each exercise:
+
+1. Write unit tests for all functionality
+2. Test edge cases and error conditions
+3. Document test cases
+4. Use test-driven development approach
