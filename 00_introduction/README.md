@@ -148,5 +148,15 @@ my_project/
 3. Practice with small projects
 4. Join the Rust community
 5. Contribute to open source projects
+6. Complete the chapter exercises
 
 Remember: Rust has a steep learning curve, but the investment pays off with reliable, efficient, and maintainable code! 🚀
+
+## 🛠️ Exercises
+
+Practice your Rust basics with these exercises (solutions available in [exercises/](exercises/)):
+
+1. Hello World Modifications
+2. Variable Manipulation
+3. Basic Type Operations
+4. Simple Program Creation
